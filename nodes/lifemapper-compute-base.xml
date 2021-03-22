@@ -19,7 +19,6 @@
 	</changelog>
 
     <!-- java for nodes -->
-    <package>libxslt</package>
     <package>python-lxml</package>
     <package>python-javapackages</package>
     <package>javapackages-tools</package>
@@ -29,44 +28,66 @@
     <package>copy-jdk-configs</package>
     <package>java-1.8.0-openjdk-headless</package>
     
-    <package>python2-subprocess32</package>
+    <!-- gdal-libs + deps -->
+    <package>gdal-libs</package>
+    <package>CharLS</package> 
+    <package>SuperLU</package> 
+    <package>armadillo</package>
+    <package>arpack</package>
+    <package>atlas</package>
+    <package>atlas-devel</package>
+    <package>blas</package> 
+    <package>blas-devel</package>
+    <package>cfitsio</package> 
+    <package>freexl</package> 
+    <package>geos</package>
+    <package>geos-devel</package>
+    <package>hdf5</package>
+    <package>hdf5-devel</package>
+    <package>lapack</package>
+    <package>lapack-devel</package>
+    <package>libaec</package>
+    <package>libaec-devel</package>
+    <package>libdap</package> 
+    <package>libgeotiff</package>
+    <package>libgeotiff-devel</package>
+    <package>libgta</package>
+    <package>libtiff-devel</package>
+    <package>netcdf</package> 
+    <package>ogdi</package> 
+    <package>openblas-openmp</package> 
+    <package>openjpeg2</package> 
+    <package>postgresql-libs</package>
+    <package>proj</package> 
+    <package>unixODBC</package> 
+    <package>xerces-c</package> 
+    <!-- gdal prerequisites (+ gdal-libs) -->
+    <package>gpsbabel</package>
+    <package>libusb</package>
+    <package>shapelib</package>
 
-	<!-- gdal prerequisites -->
-	<package>libaec</package>
-	<package>libaec-devel</package>
-	<package>hdf5</package>
-	<package>hdf5-devel</package>
-	<!-- scipy prerequisites -->
-	<package>blas</package>
-	<package>blas-devel</package>
-	<package>atlas</package>
-	<package>atlas-devel</package>
-	<package>lapack</package>
-	<package>lapack-devel</package>
 	<!-- openmodeller prerequisites -->
 	<package>gsl</package>
 	<package>gsl-devel</package>
+    <package>libopenmodeller</package>
+    <package>libopenmodeller-devel</package>
 
 	<!-- lifemapper dependencies built from source -->
 	<package>lifemapper-cctools</package>
-	<package>lifemapper-gdal</package>
-	<package>lifemapper-geos</package>
 	<package>lifemapper-lmcompute</package>
-	<package>lifemapper-openmodeller</package>
+	<!-- <package>lifemapper-openmodeller</package> -->
 	<package>lifemapper-proj</package>
 	<package>rocks-lmcompute</package>
-	<package>lifemapper-tiff</package>
 
 	<!-- python prerequisites -->
-	<package>opt-lifemapper-biotaphypy</package>
+    <package>opt-lifemapper-numpy</package>
+    <package>opt-lifemapper-matplotlib</package>
+    <package>opt-lifemapper-biotaphypy</package>
 	<package>opt-lifemapper-cython</package>
 	<package>opt-lifemapper-dendropy</package>
-	<package>opt-lifemapper-egenix-mx-base</package>
+    <package>opt-lifemapper-gdal</package>
     <package>opt-lifemapper-lmpy</package>
     <package>opt-lifemapper-scipy</package>
-    <package>opt-lifemapper-unicodecsv</package>
-    <!-- python2-futures included in /usr/lib/python2.7 so build in /opt/python  -->
-    <package>opt-lifemapper-futures</package>
 	<!-- # for requests -->
 	<!-- <package>python-ipaddress</package> -->
 	<package>opt-lifemapper-certifi</package>
