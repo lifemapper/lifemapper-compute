@@ -66,7 +66,7 @@ RPM.EXTRAS += "AutoReq: 0"
 SEDSPEC += \
         -e 's%@ARCHIVENAME@%$(ARCHIVENAME)%g'  \
         -e 's%@VERSION@%$(VERSION)%g'  \
-        -e 's%@TARBALL_POSTFIX@%$(TARBALL_POSTFIX)%g'
+        -e 's%@WHEEL@%$(WHEEL)%g'
 
 prepSrc.sh: prepSrc.sh.in
 	$(SED) $(SEDSPEC) $^ > $@
@@ -83,23 +83,13 @@ version.mk:
 
 PY.PATH = /opt/python/bin/$(PYTHONVER)
 
-build:
-	tar xzf  $(ARCHIVENAME)-$(VERSION).tar.gz 
-	(\
-	    cd $(ARCHIVENAME)-$(VERSION);   \
-	    module load opt-python;			\
-	    $(PY.PATH) setup.py build;      \
-	    module unload opt-python;       \
-	)
 
+build: version.mk
+	echo $(ARCHIVENAME)-$(VERSION)
 
 install::
-	(\
-	    cd $(ARCHIVENAME)-$(VERSION);   \
-	    module load opt-python;			\
-	    $(PY.PATH) setup.py $@ --root=$(ROOT)/; \
-	    module unload opt-python;			\
-	)
+	mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
+	install -m 664 *.$(WHEEL)  $(ROOT)/$(PKGROOT)/rocks/etc
 
 clean::
 	rm -rf $(ARCHIVENAME)-$(VERSION) version.mk prepSrc.sh
