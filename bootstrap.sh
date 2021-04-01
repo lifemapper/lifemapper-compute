@@ -43,6 +43,7 @@ module unload opt-python
 # pip for python installs
 module load opt-python
 python3.6 -m ensurepip --default-pip
+pip3 install --upgrade pip
 module unload opt-python
 
 # for scipy
@@ -52,6 +53,14 @@ rpm -i src/RPMS/atlas-3.10.1-12.el7.x86_64.rpm
 rpm -i src/RPMS/atlas-devel-3.10.1-12.el7.x86_64.rpm
 rpm -i src/RPMS/lapack-3.4.2-8.el7.x86_64.rpm
 rpm -i src/RPMS/lapack-devel-3.4.2-8.el7.x86_64.rpm
+
+# # install newer verson of proj for gdal
+cd src/proj
+make prep
+cd ../..
+compile proj
+install lifemapper-proj
+/sbin/ldconfig
 
 # for gdal
 rpm -i src/RPMS/libaec-1.0.4-1.el7.x86_64.rpm
@@ -76,35 +85,6 @@ cd ../..
 compile proj
 install lifemapper-proj
 /sbin/ldconfig
-
-# cython > 0.23.4 for numpy 
-cd src/cython
-make prep
-cd ../..
-module load opt-python
-compile cython
-module unload opt-python
-install opt-lifemapper-cython
-
-# numpy for scipy and matplotlib
-cd src/numpy
-make prep
-module load opt-python
-python3.6 -m ensurepip --default-pip
-python3.6 -m pip install *.whl
-cd ../..
-compile numpy
-module unload opt-python
-
-# matplotlib and dependencies (for biotaphypy)
-# rpm only installs wheel files
-cd src/matplotlib
-make prep
-module load opt-python
-python3.6 -m ensurepip --default-pip
-python3.6 -m pip install *.whl
-cd ../..
-module unload opt-python
 
 # Leave with opt-python loaded
 module load opt-python

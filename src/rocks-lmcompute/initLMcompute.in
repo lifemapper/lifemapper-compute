@@ -13,6 +13,17 @@ usage ()
     echo "   "
 }
 
+set_python_dependency_arrays() {
+    # shared dependencies
+    BASE_DEPS="contextlib2 numpy pyparsing pytz setuptools six wheel zipp"
+    REQUESTS_DEPS="chardet certifi idna urllib3 requests"
+    # ordered package dependencies (some dependencies shared from BASE_DEPS)
+    MATPLOTLIB_DEPS="cycler kiwisolver Pillow python_dateutil matplotlib"
+    PYTESTCOV_DEPS="attrs iniconfig coverage py typing-extensions importlib-metadata toml packaging pluggy pytest pytest-cov"
+    LMPY_DEPS="Rtree DendroPy"
+    OTHER_DEPS="biotaphypy Cython idigbio lmpy"
+}
+
 set_defaults() {
     LOG=@LMSCRATCHDISK@/log/`/bin/basename $0`.log
     rm -f $LOG
@@ -90,16 +101,14 @@ finish_wheel_installs () {
     @PYBIN@ -m pip install --upgrade pip
     WHL_DIR=@PKGROOT@/rocks/etc
 
-    # these are filename prefixes
-    echo "-- install ordered wheel dependencies ..." >> $LOG
-    ORDERED_DEPS="numpy python_dateutil pyparsing kiwisolver cycler matplotlib scipy"
-    for dep in $ORDERED_DEPS
-        do
-            wname=$WHL_DIR/$dep*whl
-            echo "install ordered dependency $dep ..." >> $LOG
-            @PYBIN@ -m pip install $wname
-        done
-
+    echo "-- install python wheels with dependencies ..." >> $LOG
+    set_python_dependency_arrays    
+    order_wheel_installs "${BASE_DEPS[@]}"
+    order_wheel_installs "${REQUESTS_DEPS[@]}"
+    order_wheel_installs "${MATPLOTLIB_DEPS[@]}"
+    order_wheel_installs "${PYTESTCOV_DEPS[@]}"
+    order_wheel_installs "${OTHER_DEPS[@]}"
+    
     INSTALLED_PKGS=`@PYBIN@ -m pip list | /usr/bin/grep -v Package | /usr/bin/grep -v "^----" | /usr/bin/awk '{print $1}'`
     # install rest of wheel files, ignore previously installed files
     echo "-- install remaining wheel dependencies ..." >> $LOG

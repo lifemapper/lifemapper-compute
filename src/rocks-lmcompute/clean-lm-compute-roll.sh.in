@@ -29,67 +29,66 @@ set_defaults() {
 
 
 del-lifemapper-shared() {
-    if [[ $LMROLL_COUNT <= 1 ]] ; then
-        echo "Removing lifemapper RPMs shared" >> $LOG
-        # for requests on all lm rolls
-        $RM opt-lifemapper-certifi
-        $RM opt-lifemapper-chardet
-        $RM opt-lifemapper-idna
-        $RM opt-lifemapper-requests
-        $RM opt-lifemapper-wheel
-        $RM opt-lifemapper-urllib3
+    echo "Removing lifemapper RPMs shared" >> $LOG
+    del_lifemapper_shared_pydeps "${BASE_DEPS[@]}"
+    del_lifemapper_shared_pydeps "${REQUESTS_DEPS[@]}"
+    del_lifemapper_shared_pydeps "${MATPLOTLIB_DEPS[@]}"
+    del_lifemapper_shared_pydeps "${PYTESTCOV_DEPS[@]}"
+    del_lifemapper_shared_pydeps "${LMPY_DEPS[@]}"
+    del_lifemapper_shared_pydeps "${OTHER_DEPS[@]}"
+    $RM opt-lifemapper-requests
+    $RM opt-lifemapper-matplotlib
+    $RM opt-lifemapper-pytest-cov
+    $RM opt-lifemapper-lmpy
+    # other deps    
+    $RM opt-lifemapper-biotaphypy
+    $RM opt-lifemapper-cython
+    $RM opt-lifemapper-lmpy
+
+    $RM opt-lifemapper-gdal
+    $RM opt-lifemapper-numpy
     
-        module load opt-python
-        $PYBIN@ -m pip uninstall -y wheel
-        $PYBIN@ -m pip uninstall -y urllib3
-        module unload opt-python
-    fi 
+    # java deps
+    $RM copy-jdk-configs
+    $RM java-1.8.0-openjdk-headless
+    $RM javapackages-tools
+    $RM lksctp-tools
+    $RM pcsc-lite-libs
+    $RM python-lxml
+    $RM python-javapackages
+    $RM tzdata-java
 
-    if [[ $LMLAB_ROLL_COUNT = 0 ]] ; then
-        echo "Removing lmcompute/lmlab RPMs shared" >> $LOG
-        # java deps
-        $RM copy-jdk-configs
-        $RM java-1.8.0-openjdk-headless
-        $RM javapackages-tools
-        $RM lksctp-tools
-        $RM pcsc-lite-libs
-        $RM python-lxml
-        $RM python-javapackages
-        $RM tzdata-java
-    fi
-
-    if [[ $LMSERVER_ROLL_COUNT = 0 ]] ; then
-        echo "Removing lmcompute/lmserver RPMs shared" >> $LOG
-        # gdal-libs + deps
-        $RM gdal-libs
-        $RM CharLS 
-        $RM SuperLU 
-        $RM armadillo
-        $RM arpack
-        $RM atlas atlas-devel
-        $RM blas  blas-devel
-        $RM cfitsio 
-        $RM freexl 
-        $RM geos geos-devel
-        $RM hdf5 hdf5-devel
-        $RM lapack lapack-devel
-        $RM libaec libaec-devel
-        $RM libdap 
-        $RM libgeotiff libgeotiff-devel
-        $RM libgta
-        $RM libtiff-devel
-        $RM netcdf 
-        $RM ogdi 
-        $RM openblas-openmp 
-        $RM openjpeg2 
-        $RM postgresql-libs
-        $RM proj 
-        $RM unixODBC 
-        $RM xerces-c 
-        # gdal deps
-        $RM gpsbabel
-        $RM libusb
-        $RM shapelib
+    echo "Removing lmcompute/lmserver RPMs shared" >> $LOG
+    # gdal-libs + deps
+    $RM gdal-libs
+    $RM CharLS 
+    $RM SuperLU 
+    $RM armadillo
+    $RM arpack
+    $RM atlas atlas-devel
+    $RM blas  blas-devel
+    $RM cfitsio 
+    $RM freexl 
+    $RM geos geos-devel
+    $RM hdf5 hdf5-devel
+    $RM lapack lapack-devel
+    $RM libaec libaec-devel
+    $RM libdap 
+    $RM libgeotiff libgeotiff-devel
+    $RM libgta
+    $RM libtiff-devel
+    $RM netcdf 
+    $RM ogdi 
+    $RM openblas-openmp 
+    $RM openjpeg2 
+    $RM postgresql-libs
+    $RM proj 
+    $RM unixODBC 
+    $RM xerces-c 
+    # gdal deps
+    $RM gpsbabel
+    $RM libusb
+    $RM shapelib
         
         echo "Removing lmcompute/lmserver shared lifemapper-* and opt-lifemapper-* RPMS" >> $LOG	
         $RM opt-lifemapper-biotaphypy
