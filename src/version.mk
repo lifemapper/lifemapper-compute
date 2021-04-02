@@ -29,3 +29,5 @@ JOB_CAPACITY		= 20
 
 # Code version
 LMCODE_VERSION		= 3.4.9.p3
+
+WHEEL                   = whl
