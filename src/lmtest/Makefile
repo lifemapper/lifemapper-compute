@@ -53,77 +53,29 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
 # @Copyright@
-#
 
 REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
 
-PY.PATH = /opt/python/bin/$(PYTHONVER)
-
 version.mk:
 	cat ../version.mk version.mk.in > version.mk
 
+PY.PATH = /opt/python/bin/$(PYTHONVER)
+
 SEDSPEC += \
-	-e 's%@PYTHONVER@%$(PYTHONVER)%g' \
-	-e 's%@PKGROOT@%$(PKGROOT)%g' \
-	-e 's%@LMHOME@%$(LMHOME)%g' \
-	-e 's%@LMDISK@%$(LMDISK)%g' \
-	-e 's%@LMSCRATCHDISK@%$(LMSCRATCHDISK)%g' \
-	-e 's%@PYBIN@%$(PY.PATH)%g' \
-	-e 's%@VERSION@%$(VERSION)%g' \
-	-e 's%@DATADIR_SHARED@%$(DATADIR_SHARED)%g' \
-	-e 's%@ENV_DATA_DIR@%$(ENV_DATA_DIR)%g' \
-	-e 's%@INPUT_LAYER_DB@%$(INPUT_LAYER_DB)%g' \
-	-e 's%@LMURL@%$(LMURL)%g' \
-	-e 's%@TARBALL_POSTFIX@%$(TARBALL_POSTFIX)%g'
+        -e 's%@ARCHIVENAME@%$(ARCHIVENAME)%g'  \
+        -e 's%@VERSION@%$(VERSION)%g' \
+        -e 's%@WHEEL@%$(WHEEL)%g'
 
+build: 
+	echo $(ARCHIVENAME)-$(VERSION)
 
-PROFILES = \
-	lmcompute.sh \
-	lmcompute.csh 
-
-SCRIPTS = \
-	lifemapper.conf
-
-PROGS = \
-	initLMcompute \
-	clean-lm-compute-roll \
-	define_python_dependencies \
-	updateCfg-lmcompute \
-	confSysvals \
-	transformData \
-	fixNodePermissions \
-	installComputeCronJobs
-
-CRONS = \
-	lmcompute_aggregate_logs \
-	lmcompute_free_memory
-	
-%: %.in
-	$(SED) $(SEDSPEC) $^ > $@
-
-.SUFFIXES:
-
-build: $(SCRIPTS) $(PROFILES) $(PROGS) $(CRONS)
-	
 install::
-
-	mkdir -p $(ROOT)/etc/profile.d
-	install -m 755 $(PROFILES) $(ROOT)/etc/profile.d
-
-	mkdir -p $(ROOT)/$(PKGROOT)/rocks/bin
-	install -m 755 $(PROGS) $(ROOT)/$(PKGROOT)/rocks/bin
-	install -m 755 addMount $(ROOT)/$(PKGROOT)/rocks/bin
-
 	mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
-	install -m 644 mountinfo $(ROOT)/$(PKGROOT)/rocks/etc
-	install -m 755 $(CRONS) $(ROOT)/$(PKGROOT)/rocks/etc
-	install -m 755 lmcompute_remove_SGE_logs $(ROOT)/$(PKGROOT)/rocks/etc
-
-	mkdir -p $(ROOT)/etc/ld.so.conf.d
-	install -m 644 lifemapper.conf $(ROOT)/etc/ld.so.conf.d
+	install -m 664 *.$(WHEEL)  $(ROOT)/$(PKGROOT)/rocks/etc
 
 clean::
-	rm -rf version.mk $(SCRIPTS) $(PROFILES) $(PROGS)
+	rm -rf $(ARCHIVENAME)-$(VERSION) version.mk
+

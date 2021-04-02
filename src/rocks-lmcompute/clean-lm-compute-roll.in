@@ -6,13 +6,10 @@
 #    group lmwriter
 
 RM="rpm -evl --quiet --nodeps"
-PYBIN=/opt/python/bin/python3.6
-PIP3=/opt/python/bin/pip3.6
+PYBIN=@PYTHON36@
 ROCKS_CMD=/opt/rocks/bin/rocks
 LMUSER_COUNT=`/bin/egrep -i "^lmwriter" /etc/passwd | wc -l`
 LMROLL_COUNT=`$ROCKS_CMD list roll | grep lifemapper | wc -l`
-LMLAB_ROLL_COUNT=`$ROCKS_CMD list roll | grep lifemapper-lab |  wc -l`
-LMSERVER_ROLL_COUNT=`$ROCKS_CMD list roll | grep lifemapper-server |  wc -l`
 
 TimeStamp () {
     echo $1 `/bin/date` >> $LOG
@@ -27,24 +24,37 @@ set_defaults() {
     source /usr/share/Modules/init/bash
 }
 
+delete_python_dependencies () {
+    DEPENDENCIES=("$@")
+    module load opt-python
+    echo "Uninstall shared python dependencies " $DEPENDENCIES
+    for d in $DEPENDENCIES
+        do
+            $PY3 -m pip uninstall -y $d
+        done    
+    module unload opt-python
+}
 
 del-lifemapper-shared() {
     echo "Removing lifemapper RPMs shared" >> $LOG
-    del_lifemapper_shared_pydeps "${BASE_DEPS[@]}"
-    del_lifemapper_shared_pydeps "${REQUESTS_DEPS[@]}"
-    del_lifemapper_shared_pydeps "${MATPLOTLIB_DEPS[@]}"
-    del_lifemapper_shared_pydeps "${PYTESTCOV_DEPS[@]}"
-    del_lifemapper_shared_pydeps "${LMPY_DEPS[@]}"
-    del_lifemapper_shared_pydeps "${OTHER_DEPS[@]}"
+    $BIN/define_python_dependencies
+    delete_python_dependencies "${BASE_DEPS[@]}"
+    delete_python_dependencies "${REQUESTS_DEPS[@]}"
+    delete_python_dependencies "${MATPLOTLIB_DEPS[@]}"
+    delete_python_dependencies "${PYTESTCOV_DEPS[@]}"
+    delete_python_dependencies "${LMPY_DEPS[@]}"
+    delete_python_dependencies "${LMTEST_DEPS[@]}"
+    delete_python_dependencies "${OTHER_DEPS[@]}"
     $RM opt-lifemapper-requests
     $RM opt-lifemapper-matplotlib
     $RM opt-lifemapper-pytest-cov
     $RM opt-lifemapper-lmpy
-    # other deps    
+    # OTHER_DEPS
     $RM opt-lifemapper-biotaphypy
     $RM opt-lifemapper-cython
     $RM opt-lifemapper-lmpy
 
+    # other python packages
     $RM opt-lifemapper-gdal
     $RM opt-lifemapper-numpy
     
@@ -90,31 +100,21 @@ del-lifemapper-shared() {
     $RM libusb
     $RM shapelib
         
-        echo "Removing lmcompute/lmserver shared lifemapper-* and opt-lifemapper-* RPMS" >> $LOG	
-        $RM opt-lifemapper-biotaphypy
-        $RM     lifemapper-cctools
-        $RM opt-lifemapper-cython
-        $RM opt-lifemapper-dendropy
-        $RM     lifemapper-env-data
-        $RM opt-lifemapper-gdal
-        $RM opt-lifemapper-lmpy
-        $RM opt-lifemapper-numpy
-        $RM opt-lifemapper-matplotlib
-        $RM     lifemapper-proj
-        $RM opt-lifemapper-scipy
-        $RM     lifemapper-tiff
+    echo "Removing lmcompute/lmserver shared lifemapper-* and opt-lifemapper-* RPMS" >> $LOG	
+    $RM     lifemapper-cctools
+    $RM     lifemapper-env-data
+    $RM     lifemapper-proj
         
-        echo "Removing lmcompute/lmserver shared python wheels from opt-lifemapper-* RPMs" >> $LOG
-        module load opt-python
-        $PYBIN@ -m pip uninstall -y python-dateutil
-        $PYBIN@ -m pip uninstall -y pyparsing
-        $PYBIN@ -m pip uninstall -y kiwisolver
-        $PYBIN@ -m pip uninstall -y cycler
-        $PYBIN@ -m pip uninstall -y numpy
-        $PYBIN@ -m pip uninstall -y scipy
-        $PYBIN@ -m pip uninstall -y matplotlib
-        module unload opt-python
-    fi
+    echo "Removing lmcompute/lmserver shared python wheels from opt-lifemapper-* RPMs" >> $LOG
+    module load opt-python
+    $PYBIN@ -m pip uninstall -y python-dateutil
+    $PYBIN@ -m pip uninstall -y pyparsing
+    $PYBIN@ -m pip uninstall -y kiwisolver
+    $PYBIN@ -m pip uninstall -y cycler
+    $PYBIN@ -m pip uninstall -y numpy
+    $PYBIN@ -m pip uninstall -y scipy
+    $PYBIN@ -m pip uninstall -y matplotlib
+    module unload opt-python
 }
 
 del-shared-directories() {
@@ -208,7 +208,6 @@ del-automount-entry
 
 if [ $LMROLL_COUNT = 1 ]; then
     echo "Removing the last lifemapper roll"  >> $LOG
-else
 	del-lifemapper-shared
 	del-shared-directories
 	del-shared-user-group

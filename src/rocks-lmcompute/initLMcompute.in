@@ -13,16 +13,18 @@ usage ()
     echo "   "
 }
 
-set_python_dependency_arrays() {
-    # shared dependencies
-    BASE_DEPS="contextlib2 numpy pyparsing pytz setuptools six wheel zipp"
-    REQUESTS_DEPS="chardet certifi idna urllib3 requests"
-    # ordered package dependencies (some dependencies shared from BASE_DEPS)
-    MATPLOTLIB_DEPS="cycler kiwisolver Pillow python_dateutil matplotlib"
-    PYTESTCOV_DEPS="attrs iniconfig coverage py typing-extensions importlib-metadata toml packaging pluggy pytest pytest-cov"
-    LMPY_DEPS="Rtree DendroPy"
-    OTHER_DEPS="biotaphypy Cython idigbio lmpy"
-}
+# set_python_dependency_arrays() {
+#     # shared dependencies
+#     $BIN/define_python_dependencies
+#     BASE_DEPS="contextlib2 numpy pyparsing pytz setuptools six wheel zipp"
+#     REQUESTS_DEPS="chardet certifi idna urllib3 requests"
+#     # ordered package dependencies (some dependencies shared from BASE_DEPS)
+#     MATPLOTLIB_DEPS="cycler kiwisolver Pillow python_dateutil matplotlib"
+#     PYTESTCOV_DEPS="attrs iniconfig coverage py typing-extensions importlib-metadata toml packaging pluggy pytest pytest-cov"
+#     LMPY_DEPS="Rtree DendroPy"
+#     LMTEST_DEPS="Lifemapper_Client_Library Lifemapper_Testing_Library"
+#     OTHER_DEPS="biotaphypy Cython idigbio lmpy"
+# }
 
 set_defaults() {
     LOG=@LMSCRATCHDISK@/log/`/bin/basename $0`.log
@@ -102,11 +104,13 @@ finish_wheel_installs () {
     WHL_DIR=@PKGROOT@/rocks/etc
 
     echo "-- install python wheels with dependencies ..." >> $LOG
-    set_python_dependency_arrays    
+    $BIN/define_python_dependencies
     order_wheel_installs "${BASE_DEPS[@]}"
     order_wheel_installs "${REQUESTS_DEPS[@]}"
     order_wheel_installs "${MATPLOTLIB_DEPS[@]}"
     order_wheel_installs "${PYTESTCOV_DEPS[@]}"
+    order_wheel_installs "${LMPY_DEPS[@]}"
+    order_wheel_installs "${LMTEST_DEPS[@]}"
     order_wheel_installs "${OTHER_DEPS[@]}"
     
     INSTALLED_PKGS=`@PYBIN@ -m pip list | /usr/bin/grep -v Package | /usr/bin/grep -v "^----" | /usr/bin/awk '{print $1}'`
