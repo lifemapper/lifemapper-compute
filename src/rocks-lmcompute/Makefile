@@ -90,7 +90,6 @@ SCRIPTS = \
 PROGS = \
 	initLMcompute \
 	clean-lm-compute-roll \
-	define_python_dependencies \
 	updateCfg-lmcompute \
 	confSysvals \
 	transformData \
@@ -116,11 +115,12 @@ install::
 	mkdir -p $(ROOT)/$(PKGROOT)/rocks/bin
 	install -m 755 $(PROGS) $(ROOT)/$(PKGROOT)/rocks/bin
 	install -m 755 addMount $(ROOT)/$(PKGROOT)/rocks/bin
-
+    install -m 755 define_python_dependencies $(ROOT)/$(PKGROOT)/rocks/bin
+    
 	mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
-	install -m 644 mountinfo $(ROOT)/$(PKGROOT)/rocks/etc
 	install -m 755 $(CRONS) $(ROOT)/$(PKGROOT)/rocks/etc
 	install -m 755 lmcompute_remove_SGE_logs $(ROOT)/$(PKGROOT)/rocks/etc
+    install -m 644 mountinfo $(ROOT)/$(PKGROOT)/rocks/etc
 
 	mkdir -p $(ROOT)/etc/ld.so.conf.d
 	install -m 644 lifemapper.conf $(ROOT)/etc/ld.so.conf.d
