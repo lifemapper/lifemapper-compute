@@ -10,10 +10,11 @@ PYBIN=@PYTHON36@
 ROCKS_CMD=/opt/rocks/bin/rocks
 LMUSER_COUNT=`/bin/egrep -i "^lmwriter" /etc/passwd | wc -l`
 LMROLL_COUNT=`$ROCKS_CMD list roll | grep lifemapper | wc -l`
-
+\
 TimeStamp () {
     echo $1 `/bin/date` >> $LOG
 }
+
 
 set_defaults() {
     LOG=/tmp/`/bin/basename $0`.log
@@ -23,6 +24,7 @@ set_defaults() {
     echo "-- enable modules"  | tee -a $LOG
     source /usr/share/Modules/init/bash
 }
+
 
 delete_python_dependencies () {
     DEPENDENCIES=("$@")
@@ -35,16 +37,19 @@ delete_python_dependencies () {
     module unload opt-python
 }
 
+
 del-lifemapper-shared() {
-    echo "Removing lifemapper RPMs shared" >> $LOG
+    echo "Removing shared python wheels" >> $LOG
     $BIN/define_python_dependencies
-    delete_python_dependencies "${BASE_DEPS[@]}"
+    delete_python_dependencies  "${BASE_DEPS[@]}"
     delete_python_dependencies "${REQUESTS_DEPS[@]}"
     delete_python_dependencies "${MATPLOTLIB_DEPS[@]}"
     delete_python_dependencies "${PYTESTCOV_DEPS[@]}"
     delete_python_dependencies "${LMPY_DEPS[@]}"
     delete_python_dependencies "${LMTEST_DEPS[@]}"
     delete_python_dependencies "${OTHER_DEPS[@]}"
+
+    echo "Removing shared lifemapper-* and opt-lifemapper-* RPMS" >> $LOG    
     $RM opt-lifemapper-requests
     $RM opt-lifemapper-matplotlib
     $RM opt-lifemapper-pytest-cov
@@ -52,23 +57,13 @@ del-lifemapper-shared() {
     # OTHER_DEPS
     $RM opt-lifemapper-biotaphypy
     $RM opt-lifemapper-cython
-    $RM opt-lifemapper-lmpy
 
-    # other python packages
-    $RM opt-lifemapper-gdal
-    $RM opt-lifemapper-numpy
-    
-    # java deps
-    $RM copy-jdk-configs
-    $RM java-1.8.0-openjdk-headless
-    $RM javapackages-tools
-    $RM lksctp-tools
-    $RM pcsc-lite-libs
-    $RM python-lxml
-    $RM python-javapackages
-    $RM tzdata-java
+    $RM     lifemapper-cctools
+    $RM     lifemapper-env-data
+    $RM     lifemapper-proj
+    $RM     lifemapper-tiff
 
-    echo "Removing lmcompute/lmserver RPMs shared" >> $LOG
+    echo "Removing shared standard RPMS" >> $LOG    
     # gdal-libs + deps
     $RM gdal-libs
     $RM CharLS 
@@ -98,24 +93,9 @@ del-lifemapper-shared() {
     # gdal deps
     $RM gpsbabel
     $RM libusb
-    $RM shapelib
-        
-    echo "Removing lmcompute/lmserver shared lifemapper-* and opt-lifemapper-* RPMS" >> $LOG	
-    $RM     lifemapper-cctools
-    $RM     lifemapper-env-data
-    $RM     lifemapper-proj
-        
-    echo "Removing lmcompute/lmserver shared python wheels from opt-lifemapper-* RPMs" >> $LOG
-    module load opt-python
-    $PYBIN@ -m pip uninstall -y python-dateutil
-    $PYBIN@ -m pip uninstall -y pyparsing
-    $PYBIN@ -m pip uninstall -y kiwisolver
-    $PYBIN@ -m pip uninstall -y cycler
-    $PYBIN@ -m pip uninstall -y numpy
-    $PYBIN@ -m pip uninstall -y scipy
-    $PYBIN@ -m pip uninstall -y matplotlib
-    module unload opt-python
+    $RM shapelib    
 }
+
 
 del-shared-directories() {
    echo "Removing lifemapper installation directory" >> $LOG
@@ -127,6 +107,7 @@ del-shared-directories() {
    rm -rf /var/run/lifemapper
 }
 
+
 del-shared-user-group () {
     echo "Remove lmwriter user/group/dirs" >> $LOG
     userdel lmwriter
@@ -136,6 +117,7 @@ del-shared-user-group () {
     echo "Syncing users info" >> $LOG
     $ROCKS_CMD sync users
 }
+
 
 del-lifemapper() {
    echo "Removing lifemapper prerequisite RPMS" >> $LOG
@@ -149,6 +131,7 @@ del-lifemapper() {
    $RM roll-lifemapper-compute-kickstart
 }
 
+
 del-node-directories () {
    echo "Removing node code, data and PID directories" >> $LOG
    $ROCKS_CMD run host compute "rm -rf @LMHOME@"
@@ -157,7 +140,7 @@ del-node-directories () {
    $ROCKS_CMD run host compute "rm -rf /var/run/lifemapper"
 }
 
-# remove obsolete Lifemapper cron jobs
+
 del-cron-jobs () {
     # only on frontend
     name1=`hostname`
@@ -176,6 +159,7 @@ del-automount-entry () {
     /bin/cp /tmp/auto.share.nolmcompute /etc/auto.share
 }
 
+
 del-roll () {
     echo
     echo "Removing roll lifemapper-compute" >> $LOG
@@ -186,6 +170,7 @@ del-roll () {
     echo
 }
 
+
 check_lm_processes () {
     LMUSER_PROCESSES=`ps -Alf | grep lmwriter | grep -v grep | wc -l`
     if [ $LMUSER_PROCESSES -ne 0 ]; then
@@ -194,8 +179,8 @@ check_lm_processes () {
     fi 
 }
 
-### main ###
 
+### main ###
 check_lm_processes
 
 set_defaults

@@ -97,6 +97,17 @@ run_ldconfig () {
     /sbin/ldconfig
 }
 
+order_wheel_installs () {
+    DEPENDENCIES=("$@")
+    echo "Install dependencies " $DEPENDENCIES
+    for d in $DEPENDENCIES
+        do
+            echo "install dependency $d from $WHL_DIR ..."
+            wname=$WHL_DIR/$d*whl
+            @PYBIN@ -m pip install $wname
+        done    
+}
+
 # Install all python wheel files with pip
 finish_wheel_installs () {
     @PYBIN@ -m ensurepip --default-pip
