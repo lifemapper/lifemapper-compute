@@ -6,4 +6,12 @@ TARBALL_POSTFIX	= tar.gz
 
 RPM.EXTRAS  = %define __os_install_post /usr/lib/rpm/brp-python-bytecompile  $(PY.PATH)
 
+# Dependencies biotaphyPy 1.2.2
+#     lmpy
+#         dendropy>=4.0.0
+#         scipy>=1.0.0
+#             numpy>=1.11.0
+#     matplotlib
+#         numpy>=1.11.0
+
 RPM.FILES =  $(PKGROOT)/*

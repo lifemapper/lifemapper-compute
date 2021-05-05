@@ -1,0 +1,87 @@
+#!/bin/bash
+#
+# This script installs python wheels in order so that dependency versions are controlled 
+# and not pulled in automatically. 
+# The script can be run at any time to re-install included wheels.
+
+set_defaults() {
+    # Source function library.
+    INITD=/etc/rc.d/init.d
+    . $INITD/functions
+
+    # log errors
+    LOG=@LMSCRATCHDISK@/log/`/bin/basename $0`.log
+    rm -f $LOG
+    touch $LOG
+
+    BIN=@PKGROOT@/rocks/bin
+    WHL_DIR=@PKGROOT@/rocks/etc
+
+    PY3=@PYBIN@
+
+    echo "-- enable modules"  | tee -a $LOG
+    source /usr/share/Modules/init/bash
+}
+
+# ordered dependencies (use filename prefixes, sometimes diff from packagename)
+define_python_dependencies () {
+    REQUESTS_DEPS="chardet certifi idna urllib3 requests"
+    LMPY_DEPS="Rtree DendroPy numpy scipy lmpy"
+    MATPLOTLIB_DEPS="six cycler numpy kiwisolver Pillow python_dateutil pyparsing matplotlib"
+    OTHER_DEPS="biotaphypy cython idigbio"
+}
+
+order_wheel_installs () {
+    # httpagentparser (cherrypy), 
+    # pyrsistent, parse, termcolor, open-api-tools (specify-oat)
+    #   are all pip-installable tar.gz file
+    DEPENDENCIES=("$@")
+    echo "***" >> $LOG
+    echo "Install ordered dependencies " $DEPENDENCIES >> $LOG
+    for d in $DEPENDENCIES
+        do
+            echo "install dependency $d from $WHL_DIR ..." >> $LOG
+            wname=$WHL_DIR/$d*
+            $PY3 -m pip install $wname >> $LOG
+        done    
+}
+
+# Install all python wheel files with pip
+finish_wheel_installs () {
+    echo "-- install python packages (wheels, tarballs) with dependencies ..." >> $LOG
+    define_python_dependencies
+    # Requests needed for openapi3, lmtrex, specify-oat
+    order_wheel_installs "${REQUESTS_DEPS[@]}"
+    # Flask needed for lmtrex, specify-oat
+    order_wheel_installs "${LMPY_DEPS[@]}"
+    order_wheel_installs "${MATPLOTLIB_DEPS[@]}"
+    order_wheel_installs "${OTHER_DEPS[@]}"
+    
+    INSTALLED_PKGS=`$PY3 -m pip list | /usr/bin/grep -v Package | /usr/bin/grep -v "^----" | /usr/bin/awk '{print $1}'`
+    # install rest of wheel files, ignore previously installed files
+    echo "-- install remaining wheel dependencies ..." >> $LOG
+    FILES=$WHL_DIR/*whl
+    startidx=$((${#WHL_DIR} + 2))
+    for f in $FILES
+        do
+            filelen=${#f}
+            # filename prefix sometimes differs from package name
+            pkgname=$(echo $f | cut -c$startidx-$filelen | cut -d'-' -f1)
+            if [[ ${INSTALLED_PKGS[*]} =~ $pkgname ]]; then
+                echo "$pkgname installed already ..."
+            else
+                echo "install remaining dependency $pkgname ..."
+                $PY3 -m pip install $f
+            fi
+        done
+}
+
+time_stamp () {
+    echo $1 `/bin/date` >> $LOG
+}
+
+####### Main #######
+set_defaults
+time_stamp "# Start"
+finish_wheel_installs
+time_stamp "# End"

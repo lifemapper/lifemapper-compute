@@ -26,29 +26,18 @@ set_defaults() {
 }
 
 
-delete_python_dependencies () {
-    DEPENDENCIES=("$@")
+delete-python-dependencies () {
     module load opt-python
-    echo "Uninstall shared python dependencies " $DEPENDENCIES
-    for d in $DEPENDENCIES
-        do
-            $PY3 -m pip uninstall -y $d
-        done    
+    echo "Removing python packages" >> $LOG
+    $PIP3 uninstall -y chardet certifi idna urllib3 requests
+    $PIP3 uninstall -y Rtree DendroPy numpy scipy lmpy
+    $PIP3 uninstall -y six cycler numpy kiwisolver Pillow python_dateutil pyparsing matplotlib
+    $PIP3 uninstall -y biotaphypy cython idigbio
     module unload opt-python
 }
 
 
 del-lifemapper-shared() {
-    echo "Removing shared python wheels" >> $LOG
-    $BIN/define_python_dependencies
-    delete_python_dependencies  "${BASE_DEPS[@]}"
-    delete_python_dependencies "${REQUESTS_DEPS[@]}"
-    delete_python_dependencies "${MATPLOTLIB_DEPS[@]}"
-    delete_python_dependencies "${PYTESTCOV_DEPS[@]}"
-    delete_python_dependencies "${LMPY_DEPS[@]}"
-    delete_python_dependencies "${LMTEST_DEPS[@]}"
-    delete_python_dependencies "${OTHER_DEPS[@]}"
-
     echo "Removing shared lifemapper-* and opt-lifemapper-* RPMS" >> $LOG    
     $RM opt-lifemapper-requests
     $RM opt-lifemapper-matplotlib
@@ -196,6 +185,7 @@ del-automount-entry
 if [ $LMROLL_COUNT = 1 ]; then
     echo "Removing the last lifemapper roll"  >> $LOG
 	del-lifemapper-shared
+	delete-python-dependencies
 	del-shared-directories
 	del-shared-user-group
 fi

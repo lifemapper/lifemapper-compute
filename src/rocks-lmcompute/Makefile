@@ -89,6 +89,7 @@ SCRIPTS = \
 
 PROGS = \
 	initLMcompute \
+    install-wheels \
 	clean-lm-compute-roll \
 	updateCfg-lmcompute \
 	confSysvals \
