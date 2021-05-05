@@ -87,6 +87,7 @@
     <package>opt-lifemapper-lmtest</package>
     <package>opt-lifemapper-matplotlib</package>
 	<package>opt-lifemapper-requests</package>
+	<package>opt-lifemapper-specify-oat</package>
 
 <post>
 
