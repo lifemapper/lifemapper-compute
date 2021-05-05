@@ -123,8 +123,8 @@ install::
 	install -m 755 $(TOPDIR)/LmCompute/apps/lmMaxent $(ROOT)/$(PKGROOT)/bin
 	mv $(TOPDIR)/LmCompute/apps/maxent.bat  $(ROOT)/$(PKGROOT)/bin
 	mv $(TOPDIR)/*  $(ROOT)/$(PKGROOT) 
-    mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
-    install -m 644 *whl $(ROOT)/$(PKGROOT)/rocks/etc
+	mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
+	install -m 644 *whl $(ROOT)/$(PKGROOT)/rocks/etc
 
 clean::
 	rm -rf $(SCRIPTS) 
