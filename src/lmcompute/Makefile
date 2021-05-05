@@ -124,7 +124,7 @@ install::
 	mv $(TOPDIR)/LmCompute/apps/maxent.bat  $(ROOT)/$(PKGROOT)/bin
 	mv $(TOPDIR)/*  $(ROOT)/$(PKGROOT) 
 	mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
-	install -m 644 *whl $(ROOT)/$(PKGROOT)/rocks/etc
+	install -m 664 idigbio*gz  $(ROOT)/$(PKGROOT)/rocks/etc
 
 clean::
 	rm -rf $(SCRIPTS) 
