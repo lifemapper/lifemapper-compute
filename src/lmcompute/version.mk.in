@@ -1,6 +1,6 @@
 NAME            = lifemapper-lmcompute
 REPONAME        = core
-VERSION         = $(shell date +%F | tr - .)
+VERSION         = $(LMCODE_VERSION)
 RELEASE         = 0
 TARBALL_POSTFIX = tar.gz
 
