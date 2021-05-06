@@ -31,10 +31,10 @@ delete-python-dependencies () {
     echo "Removing python packages" >> $LOG
     $PY3 -m pip uninstall -y chardet certifi idna urllib3 requests
     $PY3 -m pip uninstall -y Rtree DendroPy numpy scipy lmpy
-    $PY3 -m pip uninstall -y six cycler numpy kiwisolver Pillow python_dateutil pyparsing matplotlib
-    $PY3 -m pip uninstall -y attrs zipp importlib_metadata setuptools pyrsistent jsonschema openapi_schema_validator isodate more_itertools Werkzeug lazy_object_proxy PyYAML openapi_spec_validator six parse openapi_core 
-    $PY3 -m pip uninstall -y PyYAML openAPI3 simplejson termcolor dataclasses
-    $PY3 -m pip uninstall -y biotaphypy cython idigbio lm-test GDAL
+    $PY3 -m pip uninstall -y six cycler numpy kiwisolver Pillow python-dateutil pyparsing matplotlib
+    $PY3 -m pip uninstall -y attrs zipp importlib-metadata setuptools pyrsistent jsonschema openapi-schema-validator isodate more-itertools Werkzeug lazy-object-proxy PyYAML openapi-spec-validator six parse openapi-core 
+    $PY3 -m pip uninstall -y PyYAML openapi3 simplejson termcolor dataclasses
+    $PY3 -m pip uninstall -y biotaphypy Cython idigbio lm-test GDAL
     module unload opt-python
 }
 
