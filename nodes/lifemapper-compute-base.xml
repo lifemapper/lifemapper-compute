@@ -27,6 +27,7 @@
     <package>tzdata-java</package>
     <package>copy-jdk-configs</package>
     <package>java-1.8.0-openjdk-headless</package>
+    <package>java-1.8.0-openjdk</package>
     
     <!-- gdal-libs + deps -->
     <package>gdal-libs</package>
