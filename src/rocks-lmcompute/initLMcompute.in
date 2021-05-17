@@ -101,9 +101,9 @@ finish_pip_installs () {
     @PYBIN@ -m ensurepip --default-pip
     @PYBIN@ -m pip install --upgrade pip
 
-    echo "-- run install-wheels script ..." >> $LOG
-    $BIN/install-wheels
-    echo "-- completed install-wheels script" >> $LOG
+    echo "-- run install_compute_wheels script ..." >> $LOG
+    $BIN/install_compute_wheels
+    echo "-- completed install_compute_wheels script" >> $LOG
 }
 
 
