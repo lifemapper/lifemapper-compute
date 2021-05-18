@@ -26,7 +26,7 @@ set_defaults() {
 }
 
 
-delete-python-dependencies () {
+del-shared-python-dependencies () {
     module load opt-python
     echo "Removing python packages" >> $LOG
     $PY3 -m pip uninstall -y chardet certifi idna urllib3 requests
@@ -39,7 +39,7 @@ delete-python-dependencies () {
 }
 
 
-del-lifemapper-shared() {
+del-shared-lifemapper() {
     echo "Removing shared lifemapper-* and opt-lifemapper-* RPMS" >> $LOG    
     $RM opt-lifemapper-gdal
     $RM opt-lifemapper-requests
@@ -184,8 +184,8 @@ del-automount-entry
 
 if [ $LMROLL_COUNT = 1 ]; then
     echo "Removing the last lifemapper roll"  >> $LOG
-	del-lifemapper-shared
-	delete-python-dependencies
+	del-shared-lifemapper
+	del-shared-python-dependencies
 	del-shared-directories
 	del-shared-user-group
 fi

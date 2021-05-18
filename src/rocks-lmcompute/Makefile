@@ -115,7 +115,6 @@ install::
 	mkdir -p $(ROOT)/$(PKGROOT)/rocks/bin
 	install -m 755 $(PROGS) $(ROOT)/$(PKGROOT)/rocks/bin
 	install -m 755 addMount $(ROOT)/$(PKGROOT)/rocks/bin
-	install -m 755 define_python_dependencies $(ROOT)/$(PKGROOT)/rocks/bin
 	
 	mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
 	install -m 755 $(CRONS) $(ROOT)/$(PKGROOT)/rocks/etc
