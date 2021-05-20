@@ -145,7 +145,7 @@ fi
 set_defaults
 TimeStamp "# Start"
 
-finish_wheel_installs
+finish_pip_installs
 run_ldconfig
 update_config 
 install_cron_jobs
