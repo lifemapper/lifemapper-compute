@@ -35,6 +35,7 @@ set_defaults() {
     	exit
     fi
 
+	PY3=@PYBIN@
     BIN=@PKGROOT@/rocks/bin
     CONFIG_FILE=@LMHOME@/config/config.lmcompute.ini
     SITE_CONFIG_FILE=@LMHOME@/config/config.site.ini
@@ -98,8 +99,8 @@ order_wheel_installs () {
 
 # Install python wheel and tar.gz files with pip
 finish_pip_installs () {
-    @PYBIN@ -m ensurepip --default-pip
-    @PYBIN@ -m pip install --upgrade pip
+    $PY3 -m ensurepip --default-pip
+    $PY3 -m pip install --upgrade pip    
 
     echo "-- run install_compute_wheels script ..." >> $LOG
     $BIN/install_compute_wheels
@@ -145,7 +146,7 @@ fi
 set_defaults
 TimeStamp "# Start"
 
-finish_wheel_installs
+finish_pip_installs
 run_ldconfig
 update_config 
 install_cron_jobs

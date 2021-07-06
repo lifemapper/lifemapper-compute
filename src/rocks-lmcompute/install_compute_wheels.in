@@ -18,7 +18,7 @@ set_defaults() {
     WHL_DIR=@PKGROOT@/rocks/etc
 
     PY3=@PYBIN@
-
+    
     echo "-- enable modules"  | tee -a $LOG
     source /usr/share/Modules/init/bash
 }
@@ -49,7 +49,7 @@ order_wheel_installs () {
 }
 
 # Install all python wheel files with pip
-finish_wheel_installs () {
+finish_pip_installs () {
     echo "-- install python packages (wheels, tarballs) with dependencies ..." >> $LOG
     define_python_dependencies
     # Requests needed for openapi3, lmtrex, specify-oat
@@ -102,5 +102,7 @@ time_stamp () {
 ####### Main #######
 set_defaults
 time_stamp "# Start"
-finish_wheel_installs
+$PY3 -m ensurepip --default-pip
+$PY3 -m pip install --upgrade pip    
+finish_pip_installs
 time_stamp "# End"
