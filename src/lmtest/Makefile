@@ -85,6 +85,11 @@ build:
 install::
 	mkdir -p $(ROOT)/$(PKGROOT)/rocks/etc
 	install -m 664 $(ARCHIVENAME)-$(VERSION)-py3-none-any.whl $(ROOT)/$(PKGROOT)/rocks/etc
+	
+	mkdir -p $(ROOT)/etc/lmtest/conf.d
+	install -m 664 cpu_usage_test.json    $(ROOT)/etc/lmtest/conf.d/
+	install -m 664 disk_usage_test.json   $(ROOT)/etc/lmtest/conf.d/
+	install -m 664 memory_usage_test.json $(ROOT)/etc/lmtest/conf.d/
 
 clean::
 	rm -rf $(ARCHIVENAME)-$(VERSION) version.mk prepSrc.sh
