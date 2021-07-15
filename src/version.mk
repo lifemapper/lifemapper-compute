@@ -28,6 +28,6 @@ JOB_SUBMITTER_TYPE	= cluster
 JOB_CAPACITY		= 20
 
 # Code version
-LMCODE_VERSION		= 3.5.2
+LMCODE_VERSION		= 3.5.3
 
 WHEEL                   = whl
